@@ -1,5 +1,5 @@
-print("Hola Mundo!!")
-print("SIIUUUUU")
+#Proyecto Programado 3
+#Jordan Lacayo y Jeremy Montero
 
 """
 Clase: Personaje.
@@ -38,5 +38,43 @@ class personaje:
     self.volar=volar
     self.elasticidad=elastic
     self.regeneracion=regen
-  
 
+"""
+Clase: Torneo.
+Atributos:
+  Nombre del torneo
+  Fecha
+  Lugar del torneo
+  Número de luchas
+  Luchas: lista de objetos de tipo Lucha
+  Bando Ganador
+Métodos:
+"""
+class torneo:
+  def __init__(self,nom,fecha,lugar,num_luchas,list_luchas,ganador):
+    self.nombre=nom
+    self.fecha=fecha
+    self.lugar=lugar
+    self.numero_luchas=num_luchas
+    self.luchas=list_luchas
+    self.bando_ganador=ganador
+
+"""
+Clase Lucha.
+Atributos:
+  Nombre del alter ego del primer luchador
+  Nombre del alter ego del segundo luchador
+  Ganador del 1er round
+  Ganador del 2do round
+  Ganador del 3er round
+  Ganador de la lucha
+Métodos:
+"""
+class lucha:
+  def __init__(luchador1,luchador2,ganador_r1,ganador_r2,ganador_r3,ganador_lucha):
+    self.alterego_luchador1=luchador1
+    self.alterego_luchador2=luchador2
+    self.ganador_round1=ganador_r1
+    self.ganador_round2=ganador_r2
+    self.ganador_round3=ganador_r3
+    self.ganador_lucha=ganador_lucha
