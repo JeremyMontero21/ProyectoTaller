@@ -1,6 +1,33 @@
 #Proyecto Programado 3
 #Jordan Lacayo y Jeremy Montero
 
+import tkinter as tk
+import random
+import os
+
+from tkinter import filedialog
+
+#Configuración de la ventana principal
+base=tk.Tk()
+base.title("El Gran Torneo (Jordan Lacayo y Jeremy Montero)")
+base.state("zoomed")
+ancho=base.winfo_screenwidth()
+base.geometry(f"{ancho}x710")
+
+#Control de acceso:
+tk.Label(base, text="Nombre completo:").pack(pady=5)
+entry_nombre = tk.Entry(base, width=30)
+entry_nombre.pack()
+
+tk.Label(base, text="Nombre de usuario:").pack(pady=5)
+entry_usuario = tk.Entry(base, width=30)
+entry_usuario.pack()
+
+tk.Label(base, text="Contraseña:").pack(pady=5)
+entry_contrasena = tk.Entry(base, show="*", width=30)
+entry_contrasena.pack()
+
+
 """
 Clase: Personaje.
 Atributos:
