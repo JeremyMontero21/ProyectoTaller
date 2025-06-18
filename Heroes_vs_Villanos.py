@@ -15,18 +15,37 @@ ancho=base.winfo_screenwidth()
 base.geometry(f"{ancho}x710")
 
 #Control de acceso:
-tk.Label(base, text="Nombre completo:").pack(pady=5)
-entry_nombre = tk.Entry(base, width=30)
-entry_nombre.pack()
-
-tk.Label(base, text="Nombre de usuario:").pack(pady=5)
+label_usuario = tk.Label(base, text="Nombre de usuario:").place(anchor="center",relx=0.5,rely=0.45) #anchor=center es para colocarlo en el centro de la pantalla y a partir de allí moverlo. Esto es con el fin de que se muestre correctamente en cualquier dispositivo.
 entry_usuario = tk.Entry(base, width=30)
-entry_usuario.pack()
+entry_usuario.place(anchor="center",relx=0.5,rely=0.5)
 
-tk.Label(base, text="Contraseña:").pack(pady=5)
-entry_contrasena = tk.Entry(base, show="*", width=30)
-entry_contrasena.pack()
+label_contra = tk.Label(base, text="Contraseña:").place(anchor="center",relx=0.5,rely=0.55)
+entry_contra = tk.Entry(base, width=30)
+entry_contra.place(anchor="center",relx=0.5,rely=0.6)
 
+#Mensaje de error en el acceso:
+error_acceso = tk.Label(base, text="Error: el nombre de usuario o la contraseña son incorrectos.")
+
+#E:Ninguna.
+#S:Si el usuario ingresó correctamente el nombre de usuario y contraseña, entrará a la aplicación. En caso contrario, saldrá un mensaje de error.
+#R:Para poder ingresar a la aplicación, se deben ingresar correctamente ambos datos.
+#Descripción: Permite validar si el nombre y la contraseña se encuentran en el archivo acceso.txt.
+def acceso():
+  usuario=entry_usuario.get()
+  contra=entry_contra.get()
+
+  with open("acceso.txt","r",encoding="utf-8") as acceso:
+    for linea in acceso:
+      _usuario_=linea.strip().split(";")[1]
+      _contra_=linea.strip().split(";")[2]
+      if usuario==_usuario_ and contra==_contra_:
+        for elem in [label_usuario,entry_usuario,label_contra,entry_contra]:
+          elem.place_forget()
+      else:
+        error_acceso.place(anchor="center",relx=0.5,rely=0.7)
+        base.after(3500, lambda: error_acceso.place_forget())
+        
+#-----------------------------------------------------------------------------------------------------------------------------------------
 
 """
 Clase: Personaje.
@@ -105,3 +124,5 @@ class lucha:
     self.ganador_round2=ganador_r2
     self.ganador_round3=ganador_r3
     self.ganador_lucha=ganador_lucha
+
+base.mainloop()
