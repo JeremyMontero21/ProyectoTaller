@@ -6,6 +6,7 @@ import random
 import os
 
 from tkinter import filedialog
+from tkinter import messagebox
 
 #Configuración de la ventana principal
 base=tk.Tk()
@@ -15,35 +16,102 @@ ancho=base.winfo_screenwidth()
 base.geometry(f"{ancho}x710")
 
 #Control de acceso:
-label_usuario = tk.Label(base, text="Nombre de usuario:").place(anchor="center",relx=0.5,rely=0.45) #anchor=center es para colocarlo en el centro de la pantalla y a partir de allí moverlo. Esto es con el fin de que se muestre correctamente en cualquier dispositivo.
+label_usuario = tk.Label(base, text="Nombre de usuario:")
+label_usuario.place(anchor="center",relx=0.5,rely=0.45) #anchor=center es para colocarlo en el centro de la pantalla y a partir de allí moverlo. Esto es con el fin de que se muestre correctamente en cualquier dispositivo.
+
 entry_usuario = tk.Entry(base, width=30)
 entry_usuario.place(anchor="center",relx=0.5,rely=0.5)
 
-label_contra = tk.Label(base, text="Contraseña:").place(anchor="center",relx=0.5,rely=0.55)
+label_contra = tk.Label(base, text="Contraseña:")
+label_contra.place(anchor="center",relx=0.5,rely=0.55)
+
 entry_contra = tk.Entry(base, width=30)
 entry_contra.place(anchor="center",relx=0.5,rely=0.6)
-
-#Mensaje de error en el acceso:
-error_acceso = tk.Label(base, text="Error: el nombre de usuario o la contraseña son incorrectos.")
 
 #E:Ninguna.
 #S:Si el usuario ingresó correctamente el nombre de usuario y contraseña, entrará a la aplicación. En caso contrario, saldrá un mensaje de error.
 #R:Para poder ingresar a la aplicación, se deben ingresar correctamente ambos datos.
 #Descripción: Permite validar si el nombre y la contraseña se encuentran en el archivo acceso.txt.
 def acceso():
+  exito=False #Valor booleano que indica si el usuario pudo ingresar o no.
   usuario=entry_usuario.get()
   contra=entry_contra.get()
+  if not usuario or not contra:
+    messagebox.showwarning("Campos incompletos", "Debes completar todos los campos solicitados.")
+  else:
+    with open("acceso.txt","r",encoding="utf-8") as acceso:
+      for linea in acceso:
+        _usuario_=linea.strip().split(";")[1]
+        _contra_=linea.strip().split(";")[2]
+        if usuario==_usuario_ and contra==_contra_:
+          for elem in [label_usuario,entry_usuario,label_contra,entry_contra,btn_ingresar]:
+            elem.place_forget()
+          btn_crear_prsnje.place(anchor="center",relx=0.5,rely=0.25)
+          btn_borrar_prsnje.place(anchor="center",relx=0.5,rely=0.35)
+          btn_crear_torneo.place(anchor="center",relx=0.5,rely=0.45)
+          btn_borrar_torneo.place(anchor="center",relx=0.5,rely=0.55)
+          btn_jugar_torneo.place(anchor="center",relx=0.5,rely=0.65)
+          btn_stats.place(anchor="center",relx=0.5,rely=0.75)
+          exito=True
+          break
+      if not exito:
+        messagebox.showerror("Error","El nombre de usuario o contraseña son incorrectos.")
 
-  with open("acceso.txt","r",encoding="utf-8") as acceso:
-    for linea in acceso:
-      _usuario_=linea.strip().split(";")[1]
-      _contra_=linea.strip().split(";")[2]
-      if usuario==_usuario_ and contra==_contra_:
-        for elem in [label_usuario,entry_usuario,label_contra,entry_contra]:
-          elem.place_forget()
-      else:
-        error_acceso.place(anchor="center",relx=0.5,rely=0.7)
-        base.after(3500, lambda: error_acceso.place_forget())
+#Botón de ingresar:
+btn_ingresar = tk.Button(base, text="Ingresar", command=acceso)
+btn_ingresar.place(anchor="center",relx=0.5,rely=0.7)
+
+#------------------------------------------------------Menú Principal--------------------------------------------------------------------#
+
+#E:
+#S:
+#R:
+#Descripción:
+def crear_personaje():
+  return
+
+#E:
+#S:
+#R:
+#Descripción:
+def borrar_personaje():
+  return
+
+#E:
+#S:
+#R:
+#Descripción:
+def crear_torneo():
+  return
+
+#E:
+#S:
+#R:
+#Descripción:
+def borrar_torneo():
+  return
+
+#E:
+#S:
+#R:
+#Descripción:
+def jugar_torneo():
+  return
+
+#E:
+#S:
+#R:
+#Descripción:
+def stats():
+  return
+  
+#Botones:
+btn_crear_prsnje = tk.Button(base, text="Crear personaje", command=crear_personaje)
+btn_borrar_prsnje = tk.Button(base, text="Borrar personaje", command=borrar_personaje)
+btn_crear_torneo = tk.Button(base, text="Crear torneo", command=crear_torneo)
+btn_borrar_torneo = tk.Button(base, text="Borrar torneo", command=borrar_torneo)
+btn_jugar_torneo = tk.Button(base, text="Jugar torneo", command=jugar_torneo)
+btn_stats = tk.Button(base, text="Estadísticas", command=stats)
         
 #-----------------------------------------------------------------------------------------------------------------------------------------
 
