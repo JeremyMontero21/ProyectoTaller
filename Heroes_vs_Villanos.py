@@ -1,196 +1,188 @@
-#Proyecto Programado 3
-#Jordan Lacayo y Jeremy Montero
-
 import tkinter as tk
-import random
-import os
-
-from tkinter import filedialog
 from tkinter import messagebox
 
-#Configuración de la ventana principal
-base=tk.Tk()
-base.title("El Gran Torneo (Jordan Lacayo y Jeremy Montero)")
+# ----------- COLORES Y ESTILO ----------- #
+COLOR_FONDO = "#161A30"
+COLOR_ACENTO = "#FFB400"
+COLOR_TEXTO = "#F2EFEA"
+COLOR_BOTON = "#FFB400"
+COLOR_BOTON_HOVER = "#FFD700"
+COLOR_BOTON_SALIR = "#B22222"
+
+FONT_TITULO = ("Impact", 48, "bold")
+FONT_LABEL = ("Arial Rounded MT Bold", 16)
+FONT_ENTRY = ("Arial Rounded MT Bold", 15)
+FONT_BOTON = ("Arial Rounded MT Bold", 15, "bold")
+FONT_BOTON_SALIR = ("Arial Rounded MT Bold", 14, "bold")
+
+# ----------- VENTANA PRINCIPAL ----------- #
+base = tk.Tk()
+base.title("EL GRAN TORNEO")
 base.state("zoomed")
-ancho=base.winfo_screenwidth()
+ancho = base.winfo_screenwidth()
 base.geometry(f"{ancho}x710")
+base.config(bg=COLOR_FONDO)
+base.resizable(False, False)
 
-#Control de acceso:
-label_usuario = tk.Label(base, text="Nombre de usuario:")
-label_usuario.place(anchor="center",relx=0.5,rely=0.45) #anchor=center es para colocarlo en el centro de la pantalla y a partir de allí moverlo. Esto es con el fin de que se muestre correctamente en cualquier dispositivo.
+# ----------- UTILIDADES VISUALES ----------- #
+def boton_hover(e):
+    e.widget.config(bg=COLOR_BOTON_HOVER, fg="#333")
 
-entry_usuario = tk.Entry(base, width=30)
-entry_usuario.place(anchor="center",relx=0.5,rely=0.5)
+def boton_leave(e):
+    e.widget.config(bg=COLOR_BOTON, fg="#161A30")
 
-label_contra = tk.Label(base, text="Contraseña:")
-label_contra.place(anchor="center",relx=0.5,rely=0.55)
+def boton_salir_hover(e):
+    e.widget.config(bg="#FF6F6F", fg="#fff")
 
-entry_contra = tk.Entry(base, width=30)
-entry_contra.place(anchor="center",relx=0.5,rely=0.6)
+def boton_salir_leave(e):
+    e.widget.config(bg=COLOR_BOTON_SALIR, fg="#fff")
 
-#E:Ninguna.
-#S:Si el usuario ingresó correctamente el nombre de usuario y contraseña, entrará a la aplicación. En caso contrario, saldrá un mensaje de error.
-#R:Para poder ingresar a la aplicación, se deben ingresar correctamente ambos datos.
-#Descripción: Permite validar si el nombre y la contraseña se encuentran en el archivo acceso.txt.
+# ----------- FRAMES DE SECCIONES ----------- #
+frame_login = tk.Frame(base, bg=COLOR_FONDO)
+frame_menu = tk.Frame(base, bg=COLOR_FONDO)
+frame_crearPers = tk.Frame(base, bg=COLOR_FONDO)
+frame_borrarPers = tk.Frame(base, bg=COLOR_FONDO)
+frame_crearTorneo = tk.Frame(base, bg=COLOR_FONDO)
+frame_borrarTorneo = tk.Frame(base, bg=COLOR_FONDO)
+frame_jugar = tk.Frame(base, bg=COLOR_FONDO)
+frame_stats = tk.Frame(base, bg=COLOR_FONDO)
+
+# ----------- FUNCIONES DE PANTALLAS ----------- #
+def ocultar_todos():
+    for f in [frame_login, frame_menu, frame_crearPers, frame_borrarPers,
+frame_crearTorneo, frame_borrarTorneo, frame_jugar, frame_stats]:
+        f.place_forget()
+
+def mostrar_login():
+    ocultar_todos()
+    frame_login.place(relwidth=1, relheight=1)
+
+def mostrar_menu():
+    ocultar_todos()
+    frame_menu.place(relwidth=1, relheight=1)
+
+def mostrar_crearPers():
+    ocultar_todos()
+    frame_crearPers.place(relwidth=1, relheight=1)
+
+def mostrar_borrarPers():
+    ocultar_todos()
+    frame_borrarPers.place(relwidth=1, relheight=1)
+
+def mostrar_crearTorneo():
+    ocultar_todos()
+    frame_crearTorneo.place(relwidth=1, relheight=1)
+
+def mostrar_borrarTorneo():
+    ocultar_todos()
+    frame_borrarTorneo.place(relwidth=1, relheight=1)
+
+def mostrar_juego():
+    ocultar_todos()
+    frame_jugar.place(relwidth=1, relheight=1)
+
+def mostrar_stats():
+    ocultar_todos()
+    frame_stats.place(relwidth=1, relheight=1)
+
+# ----------- LOGIN ----------- #
+titulo_login = tk.Label(
+    frame_login,
+    text="EL GRAN TORNEO",
+    bg=COLOR_FONDO,
+    fg=COLOR_ACENTO,
+    font=FONT_TITULO
+)
+titulo_login.place(relx=0.5, rely=0.18, anchor="center")
+
+label_usuario = tk.Label(frame_login, text="Nombre de usuario:", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL)
+label_usuario.place(relx=0.5, rely=0.33, anchor="center")
+entry_usuario = tk.Entry(frame_login, width=28, font=FONT_ENTRY, bg="#fff", fg="#333", bd=2, relief="groove")
+entry_usuario.place(relx=0.5, rely=0.38, anchor="center")
+
+label_contra = tk.Label(frame_login, text="Contraseña:", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL)
+label_contra.place(relx=0.5, rely=0.45, anchor="center")
+entry_contra = tk.Entry(frame_login, width=28, show="*", font=FONT_ENTRY, bg="#fff", fg="#333", bd=2, relief="groove")
+entry_contra.place(relx=0.5, rely=0.50, anchor="center")
+
 def acceso():
-  exito=False #Valor booleano que indica si el usuario pudo ingresar o no.
-  usuario=entry_usuario.get()
-  contra=entry_contra.get()
-  if not usuario or not contra:
-    messagebox.showwarning("Campos incompletos", "Debes completar todos los campos solicitados.")
-  else:
-    with open("acceso.txt","r",encoding="utf-8") as acceso:
-      for linea in acceso:
-        _usuario_=linea.strip().split(";")[1]
-        _contra_=linea.strip().split(";")[2]
-        if usuario==_usuario_ and contra==_contra_:
-          for elem in [label_usuario,entry_usuario,label_contra,entry_contra,btn_ingresar]:
-            elem.place_forget()
-          btn_crear_prsnje.place(anchor="center",relx=0.5,rely=0.25)
-          btn_borrar_prsnje.place(anchor="center",relx=0.5,rely=0.35)
-          btn_crear_torneo.place(anchor="center",relx=0.5,rely=0.45)
-          btn_borrar_torneo.place(anchor="center",relx=0.5,rely=0.55)
-          btn_jugar_torneo.place(anchor="center",relx=0.5,rely=0.65)
-          btn_stats.place(anchor="center",relx=0.5,rely=0.75)
-          exito=True
-          break
-      if not exito:
-        messagebox.showerror("Error","El nombre de usuario o contraseña son incorrectos.")
+    usuario = entry_usuario.get()
+    contra = entry_contra.get()
+    exito = False
+    if not usuario or not contra:
+        messagebox.showwarning("Campos incompletos", "Debes completar todos los campos solicitados.")
+    else:
+        with open("Proyecto#3/acceso.txt", "r", encoding="utf-8") as acceso:
+            for linea in acceso:
+                partes = linea.strip().split(";")
+                if len(partes) >= 3:
+                    _usuario_ = partes[1]
+                    _contra_ = partes[2]
+                    if usuario == _usuario_ and contra == _contra_:
+                        exito = True
+                        break
+        if exito:
+            mostrar_menu()
+        else:
+            messagebox.showerror("Error", "El nombre de usuario o contraseña son incorrectos.")
 
-#Botón de ingresar:
-btn_ingresar = tk.Button(base, text="Ingresar", command=acceso)
-btn_ingresar.place(anchor="center",relx=0.5,rely=0.7)
+btn_ingresar = tk.Button(frame_login, text="Ingresar", command=acceso, font=FONT_BOTON,
+width=15, bg=COLOR_BOTON, fg=COLOR_FONDO, bd=0, relief="flat", cursor="hand2",
+activebackground=COLOR_BOTON_HOVER, activeforeground="#222549")
+btn_ingresar.place(relx=0.5, rely=0.60, anchor="center")
+btn_ingresar.bind("<Enter>", boton_hover)
+btn_ingresar.bind("<Leave>", boton_leave)
 
-#------------------------------------------------------Menú Principal--------------------------------------------------------------------#
+# ----------- MENÚ PRINCIPAL ----------- #
+titulo_menu = tk.Label(
+    frame_menu,
+    text="EL GRAN TORNEO",
+    bg=COLOR_FONDO,
+    fg=COLOR_ACENTO,
+    font=FONT_TITULO
+)
+titulo_menu.place(relx=0.5, rely=0.13, anchor="center")
 
-#E:
-#S:
-#R:
-#Descripción:
-def crear_personaje():
-  return
+botones_menu = [
+    ("Crear personaje", mostrar_crearPers),
+    ("Borrar personaje", mostrar_borrarPers),
+    ("Crear torneo", mostrar_crearTorneo),
+    ("Borrar torneo", mostrar_borrarTorneo),
+    ("Jugar torneo", mostrar_juego),
+    ("Estadísticas", mostrar_stats)
+]
 
-#E:
-#S:
-#R:
-#Descripción:
-def borrar_personaje():
-  return
+for idx, (txt, cmd) in enumerate(botones_menu):
+    btn = tk.Button(frame_menu, text=txt, width=25, font=FONT_BOTON, bg=COLOR_BOTON, fg=COLOR_FONDO,
+bd=0, relief="flat", cursor="hand2", command=cmd,
+activebackground=COLOR_BOTON_HOVER, activeforeground="#222549")
+    btn.place(relx=0.5, rely=0.23 + idx * 0.10, anchor="center")
+    btn.bind("<Enter>", boton_hover)
+    btn.bind("<Leave>", boton_leave)
 
-#E:
-#S:
-#R:
-#Descripción:
-def crear_torneo():
-  return
+btn_salir = tk.Button(frame_menu, text="Cerrar sesión", width=25, font=FONT_BOTON_SALIR,
+bg=COLOR_BOTON_SALIR, fg="#fff", bd=0, relief="flat", cursor="hand2",
+command=mostrar_login, activebackground="#FF6F6F", activeforeground="#fff")
+btn_salir.place(relx=0.5, rely=0.83, anchor="center")
+btn_salir.bind("<Enter>", boton_salir_hover)
+btn_salir.bind("<Leave>", boton_salir_leave)
 
-#E:
-#S:
-#R:
-#Descripción:
-def borrar_torneo():
-  return
+# ----------- BOTONES DE VOLVER ----------- #
+for frame, funcion in [
+    (frame_crearPers, mostrar_menu),
+    (frame_borrarPers, mostrar_menu),
+    (frame_crearTorneo, mostrar_menu),
+    (frame_borrarTorneo, mostrar_menu),
+    (frame_jugar, mostrar_menu),
+    (frame_stats, mostrar_menu)
+]:
+    btn_volver = tk.Button(frame, text="Volver al menú", font=FONT_BOTON_SALIR, width=18,
+        bg=COLOR_BOTON_SALIR, fg="#fff", bd=0, relief="flat", cursor="hand2", command=funcion,
+        activebackground="#FF6F6F", activeforeground="#fff")
+    btn_volver.place(relx=0.02, rely=0.95, anchor="sw")
+    btn_volver.bind("<Enter>", boton_salir_hover)
+    btn_volver.bind("<Leave>", boton_salir_leave)
 
-#E:
-#S:
-#R:
-#Descripción:
-def jugar_torneo():
-  return
-
-#E:
-#S:
-#R:
-#Descripción:
-def stats():
-  return
-  
-#Botones:
-btn_crear_prsnje = tk.Button(base, text="Crear personaje", command=crear_personaje)
-btn_borrar_prsnje = tk.Button(base, text="Borrar personaje", command=borrar_personaje)
-btn_crear_torneo = tk.Button(base, text="Crear torneo", command=crear_torneo)
-btn_borrar_torneo = tk.Button(base, text="Borrar torneo", command=borrar_torneo)
-btn_jugar_torneo = tk.Button(base, text="Jugar torneo", command=jugar_torneo)
-btn_stats = tk.Button(base, text="Estadísticas", command=stats)
-        
-#-----------------------------------------------------------------------------------------------------------------------------------------
-
-"""
-Clase: Personaje.
-Atributos:
-  Tipo: Héroe/Villano
-  Sexo: Mujer/Hombre/No determinado
-  Nombre completo
-  Nombre de su alter ego.
-  Foto: ruta del archivo
-  Velocidad
-  Fuerza
-  Inteligencia
-  Defensa personal
-  Magia
-  Telepatía
-  Estratega
-  Volar
-  Elasticidad
-  Regeneración
-Métodos:
-"""
-class personaje:
-  def __init__(self,tipo,sexo,nom_comp,nom_alt_ego,foto,speed,fuerza,intelig,defensa,magia,telepat,estrateg,volar,elastic,regen):
-    self.tipo=tipo
-    self.sexo=sexo
-    self.nombre_completo=nom_comp
-    self.nombre_alter_ego=nom_alt_ego
-    self.foto=foto
-    self.velocidad=speed
-    self.fuerza=fuerza
-    self.inteligencia=intelig
-    self.defensa=defensa
-    self.magia=magia
-    self.telepatia=telepat
-    self.estratega=estrateg
-    self.volar=volar
-    self.elasticidad=elastic
-    self.regeneracion=regen
-
-"""
-Clase: Torneo.
-Atributos:
-  Nombre del torneo
-  Fecha
-  Lugar del torneo
-  Número de luchas
-  Luchas: lista de objetos de tipo Lucha
-  Bando Ganador
-Métodos:
-"""
-class torneo:
-  def __init__(self,nom,fecha,lugar,num_luchas,list_luchas,ganador):
-    self.nombre=nom
-    self.fecha=fecha
-    self.lugar=lugar
-    self.numero_luchas=num_luchas
-    self.luchas=list_luchas
-    self.bando_ganador=ganador
-
-"""
-Clase Lucha.
-Atributos:
-  Nombre del alter ego del primer luchador
-  Nombre del alter ego del segundo luchador
-  Ganador del 1er round
-  Ganador del 2do round
-  Ganador del 3er round
-  Ganador de la lucha
-Métodos:
-"""
-class lucha:
-  def __init__(luchador1,luchador2,ganador_r1,ganador_r2,ganador_r3,ganador_lucha):
-    self.alterego_luchador1=luchador1
-    self.alterego_luchador2=luchador2
-    self.ganador_round1=ganador_r1
-    self.ganador_round2=ganador_r2
-    self.ganador_round3=ganador_r3
-    self.ganador_lucha=ganador_lucha
-
+# ----------- INICIO ----------- #
+mostrar_login()
 base.mainloop()
