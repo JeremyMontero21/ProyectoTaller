@@ -83,6 +83,7 @@ def mostrar_crearTorneo():
 def mostrar_borrarTorneo():
     ocultar_todos()
     frame_borrarTorneo.place(relwidth=1, relheight=1)
+    borrar_torneo()
 
 def mostrar_juego():
     ocultar_todos()
@@ -300,6 +301,7 @@ def crear_formulario_borrar_personaje():
     btn_volver.bind("<Enter>", boton_salir_hover)
     btn_volver.bind("<Leave>", boton_salir_leave)
 
+
 #---------FUNCIONES AUXILIARES ÚTILES--------------#
 #E: Ninguna.
 #S: Lista de los nombres "alter ego" en el archivo luchadores,txt.
@@ -347,6 +349,7 @@ def listas_no_en_comun(lista1, lista2):
             return False
     return True
 
+
 # ----------- FORMULARIO CREAR TORNEO EN frame_crearTorneo ----------- #
 """
 Clase: Torneo.
@@ -387,7 +390,7 @@ def crear_torneo():
     for entry in [entry_nombre,entry_lugar]: #Limpiar los entrys
         entry.delete(0, "end")
             
-    tk.Label(frame_crearTorneo, text="Crear Torneo", font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO).place(relx=0.5, rely=0.05, anchor="center")
+    tk.Label(frame_crearTorneo, text="Crear Torneo", font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO).place(relx=0.5, rely=0.1, anchor="center")
 
     btn_manual = tk.Button(frame_crearTorneo, text="Manual", width=20,
                            command=lambda: crear_luchas_torneo("manual",entry_nombre.get(),entry_lugar.get(),int(cant_luchas_var.get())),
@@ -444,7 +447,7 @@ def luchas_manual(num):
     subframe_luchas.place(relx=0.5, rely=0.5, anchor="center")
     
     tk.Label(subframe_luchas, text="Bando 1", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).grid(row=0, column=0, padx=20, pady=10)
-    tk.Label(subframe_luchas, text="Bando 2", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).grid(row=0, column=1, padx=20, pady=10)
+    tk.Label(subframe_luchas, text="Bando 2", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).grid(row=0, column=2, padx=20, pady=10)
 
     for i in range(num):
         var1 = tk.StringVar(value=alter_egos[0])
@@ -453,9 +456,11 @@ def luchas_manual(num):
         opc1.config(width=53)
         entradas_bando1.append(var1)
 
+        vs=tk.Label(subframe_luchas, text="VS", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).grid(row=i+1, column=1, padx=5, pady=5)
+
         var2 = tk.StringVar(value=alter_egos[1])
         opc2 = tk.OptionMenu(subframe_luchas, var2, *alter_egos)
-        opc2.grid(row=i+1, column=1, padx=10, pady=5)
+        opc2.grid(row=i+1, column=2, padx=10, pady=5)
         opc2.config(width=53)
         entradas_bando2.append(var2)
 
@@ -525,7 +530,41 @@ def guardar_torneo(luchadores_bando1,luchadores_bando2):
             messagebox.showerror("Error", "Ambos bandos no pueden tener un mismo luchador.")
     else:
         messagebox.showerror("Error", "Todos los luchadores de un bando deben ser diferentes.")
-        
+
+
+# ----------- FORMULARIO BORRAR TORNEO EN frame_borrarTorneo ----------- #
+entry_borrar = tk.Entry(frame_borrarTorneo, width=28, font=FONT_ENTRY, bg="#fff", fg="#333", bd=2, relief="groove")
+entry_borrar.place(relx=0.5, rely=0.39, anchor="center")
+
+def borrar_torneo():
+    tk.Label(frame_borrarTorneo, text="Borrar Torneo", font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO).place(relx=0.5, rely=0.18, anchor="center")
+    tk.Label(frame_borrarTorneo, text="Nombre del torneo a borrar:", font=FONT_LABEL, bg=COLOR_FONDO, fg=COLOR_TEXTO).place(relx=0.5, rely=0.34, anchor="center")
+    entry_borrar.delete(0, "end")  #Limpiar el entry
+    btn_borrar = tk.Button(frame_borrarTorneo, text="Borrar", width=15, command=borrando_torneo, bg=COLOR_BOTON, font=FONT_BOTON)
+    btn_borrar.place(relx=0.5, rely=0.5, anchor="center")
+
+def borrando_torneo():
+    nombre = entry_borrar.get().strip()
+    if not nombre:
+        messagebox.showwarning("Sin datos", "Debes ingresar el nombre del torneo a borrar.")
+    else:
+        encontrado = False
+        nuevas_lineas = []
+        with open("torneos_creados.txt", "r", encoding="utf-8") as torneos:
+            for linea in torneos:
+                _nombre_ = linea.strip().split(";")[0]
+                if _nombre_.lower() == nombre.lower():
+                    encontrado = True
+                    continue  #No copiar esta línea (es la que se borra)
+                nuevas_lineas.append(linea)
+    if not encontrado:
+        messagebox.showerror("Error", f"No existe un torneo con el nombre {nombre}.")
+    else:
+        with open("torneos_creados.txt", "w", encoding="utf-8") as torneos:
+            for linea in nuevas_lineas:
+                torneos.write(linea)
+        messagebox.showinfo("Éxito", f"¡El torneo {nombre} ha sido borrado correctamente!")
+    
 
 # ----------- MENÚ PRINCIPAL ----------- #
 titulo_menu = tk.Label(
