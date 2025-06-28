@@ -92,6 +92,7 @@ def mostrar_juego():
 def mostrar_stats():
     ocultar_todos()
     frame_stats.place(relwidth=1, relheight=1)
+    stats()
 
 # ----------- LOGIN ----------- #
 titulo_login = tk.Label(
@@ -311,8 +312,7 @@ def obtener_alter_egos():
     alter_egos = []
     with open("luchadores.txt", "r", encoding="utf-8") as luchadores:
         for linea in luchadores:
-            partes = linea.strip().split(";")
-            alter_ego = partes[3].strip()
+            alter_ego = linea.strip().split(";")[3]
             alter_egos.append(alter_ego)
     return alter_egos
 
@@ -564,8 +564,154 @@ def borrando_torneo():
             for linea in nuevas_lineas:
                 torneos.write(linea)
         messagebox.showinfo("Éxito", f"¡El torneo {nombre} ha sido borrado correctamente!")
+
+
+# ----------- FORMULARIO ESTADÍSTICAS EN frame_stats ----------- #
+
+def stats():
+    tk.Label(frame_stats, text="Estadísticas", font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO).place(relx=0.5, rely=0.1, anchor="center")
+    subframe_stats = tk.Frame(frame_stats, bg=COLOR_FONDO, width=800, height=350, highlightbackground=COLOR_ACENTO, highlightthickness=8)
+    subframe_stats.place(relx=0.5, rely=0.5, anchor="center")
+    subframe_stats.grid_propagate(False)
+
+    labels_stats = ["Cantidad de torneos realizados:",
+                    "Cantidad de Villanos y Héroes creados:",
+                    "Héroe con más luchas ganadas:",
+                    "Héroe con más luchas perdidas:",
+                    "Villano con más luchas ganadas:",
+                    "Villano con más luchas perdidas:",
+                    "El Héroe con más números de torneos que aparece:",
+                    "El Villano con más números de torneos que aparece:"]
+    fila=0
+    for stat in labels_stats:
+        tk.Label(subframe_stats, text=stat, bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).grid(row=fila, column=0, padx=5, pady=5, sticky="w")
+        fila=fila+1
+
+    #1. Calcular la cantidad de torneos jugados (num_torneos_jugados):
+    num_torneos_jugados=0
+    with open("torneos.txt", "r", encoding="utf-8") as resultados:
+        for linea in resultados:
+            num_torneos_jugados = num_torneos_jugados + 1
+
+    #2. Calcular la cantidad de luchadores creados (num_luchadores):
+    num_luchadores = obtener_num_luchadores()
+
+#----------------------------------------EN DESARROLLO------------------------------
+    #Antes de continuar, primero obtener todos los luchadores ganadores y perdedores de luchas realizadas:
+    alter_egos_ganadores = obtener_ganadores_lucha()
+    alter_egos_perdedores = obtener_perdedores_lucha()
+    print(alter_egos_ganadores)
+    print(alter_egos_perdedores)
+    print("")
+            
+    #3. (heroe_mas_ganador)
+    #Distinguir los héroes de los villanos:
+    heroes_ganadores = distinguir_luchadores(alter_egos_ganadores,"Héroe")
+    print(heroes_ganadores)
+    #Sacar el héroe con más victorias (el más repetido):
+    heroe_mas_ganador = elemento_mas_repetido(heroes_ganadores)
+
+    #4. (heroe_mas_perdedor)
+    #Distinguir los héroes de los villanos:
+    heroes_perdedores = distinguir_luchadores(alter_egos_perdedores,"Héroe")
+    print(heroes_perdedores)
+    #Sacar el héroe con más victorias (el más repetido):
+    heroe_mas_perdedor = elemento_mas_repetido(heroes_perdedores)
+    
+    #5. (villano_mas_ganador)
+    #Distinguir los villanos de los héroes:
+    villanos_ganadores = distinguir_luchadores(alter_egos_ganadores,"Villano")
+    print(villanos_ganadores)
+    #Sacar el villano con más victorias (el más repetido):
+    villano_mas_ganador = elemento_mas_repetido(villanos_ganadores)
+
+    #6. (villano_mas_perdedor)
+    #Distinguir los villanos de los héroes:
+    villanos_perdedores = distinguir_luchadores(alter_egos_perdedores,"Villano")
+    print(villanos_perdedores)
+    #Sacar el villano con más victorias (el más repetido):
+    villano_mas_perdedor = elemento_mas_repetido(villanos_perdedores)
+
     
 
+    labels_resultados = [str(num_torneos_jugados), str(num_luchadores),
+                         heroe_mas_ganador, heroe_mas_perdedor,
+                         villano_mas_ganador, villano_mas_perdedor]
+    fila=0
+    for res in labels_resultados:
+        tk.Label(subframe_stats, text=res, bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).grid(row=fila, column=1, padx=5, pady=5)
+        fila=fila+1
+        
+#E: Una lista.
+#S: El elemento que más se repite en la lista.
+#R: Ninguno.
+#Descripción: Retorna el elemento que aparece más veces en la lista.
+def elemento_mas_repetido(lista):
+    max_repeticiones = 0
+    elemento_mas_comun = None
+
+    for i in range(len(lista)):
+        actual = lista[i]
+        repeticiones = 1  #Se cuenta el propio elemento
+
+        #Se recorre desde el siguiente elemento
+        for j in range(i + 1, len(lista)):
+            if lista[j] == actual:
+                repeticiones = repeticiones + 1
+
+        if repeticiones > max_repeticiones:
+            max_repeticiones = repeticiones
+            elemento_mas_comun = actual
+
+    return elemento_mas_comun
+
+#E: Una lista de luchadores y un string del tipo de luchador a buscar ("Héroe" o "Villano").
+#S: Nueva lista que contendrá solo el tipo de luchadores deseado.
+#R: Ninguno.
+#Descripción: Esta función se necesita en la estadísticas para hacer cálculos de solo héroes o de solo villanos.
+def distinguir_luchadores(lista_luchadores,tipo):
+    tipo_deseado = []
+    with open("luchadores.txt", "r", encoding="utf-8") as luchadores:
+        lineas_txt = luchadores.readlines()
+        for luchador in lista_luchadores:
+            for linea in lineas_txt:
+                partes = linea.strip().split(";")
+                tipo_actual = partes[0]
+                alter_ego = partes[3]
+                if luchador==alter_ego and tipo==tipo_actual:
+                    tipo_deseado.append(luchador)
+                    break
+    return tipo_deseado
+
+
+def obtener_ganadores_lucha():
+    with open("luchas.txt", "r", encoding="utf-8") as luchas:
+        lista = luchas.readlines()
+        alter_egos_ganadores = []
+        for linea in lista:
+            ganador = linea.strip().split(";")[3]
+            alter_egos_ganadores.append(ganador)
+    return alter_egos_ganadores
+
+def obtener_perdedores_lucha():
+    with open("luchas.txt", "r", encoding="utf-8") as luchas:
+        lista = luchas.readlines()
+        alter_egos_perdedores = []
+        for linea in lista:
+            partes = linea.strip().split(";")
+            luchador1 = partes[0]
+            luchador2 = partes[1]
+            ganador = partes[3]
+
+            if luchador1==ganador:
+                alter_egos_perdedores.append(luchador2)
+            elif luchador2==ganador:
+                alter_egos_perdedores.append(luchador1)
+    return alter_egos_perdedores
+
+#---------------------------------------------------------------------------
+
+        
 # ----------- MENÚ PRINCIPAL ----------- #
 titulo_menu = tk.Label(
     frame_menu,
