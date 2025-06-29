@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import messagebox
-
 import random
 from datetime import date
 
@@ -26,6 +25,7 @@ ancho = base.winfo_screenwidth()
 base.geometry(f"{ancho}x710")
 base.config(bg=COLOR_FONDO)
 base.resizable(False, False)
+base.iconbitmap("iconoWalter.ico")
 
 # ----------- UTILIDADES VISUALES ----------- #
 def boton_hover(e):
@@ -185,13 +185,11 @@ def guardar_personaje(personaje, archivo="luchadores.txt"):
     return True
 
 def crear_formulario_personaje():
-    # Limpia el frame por si acaso
     for widget in frame_crearPers.winfo_children():
         widget.destroy()
 
     tk.Label(frame_crearPers, text="Crear Personaje", font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO).place(relx=0.5, rely=0.05, anchor="center")
 
-    # --- Campos básicos ---
     tk.Label(frame_crearPers, text="Tipo:", font=FONT_LABEL, bg=COLOR_FONDO, fg=COLOR_TEXTO).place(x=90, y=110)
     tipo_var = tk.StringVar(value="Héroe")
     tk.OptionMenu(frame_crearPers, tipo_var, "Héroe", "Villano").place(x=210, y=110)
@@ -208,7 +206,6 @@ def crear_formulario_personaje():
     entry_alter = tk.Entry(frame_crearPers, width=30, font=FONT_ENTRY)
     entry_alter.place(x=260, y=247)
 
-    # --- Características super ---
     labels_caracts = [
         "Velocidad", "Fuerza", "Inteligencia", "Defensa personal",
         "Magia", "Telepatía", "Estratega", "Volar", "Elasticidad", "Regeneración"
@@ -241,12 +238,11 @@ def crear_formulario_personaje():
             return
         personaje = Personaje(tipo, sexo, nombre_completo, alter_ego, *caracts)
         if guardar_personaje(personaje):
-            crear_formulario_personaje()  # Limpia el formulario si se guarda exitosamente
+            crear_formulario_personaje()
 
     btn_guardar = tk.Button(frame_crearPers, text="Guardar", width=15, command=guardar, bg=COLOR_BOTON, font=FONT_BOTON)
     btn_guardar.place(relx=0.5, y=690, anchor="center")
 
-    # Botón Volver al menú
     btn_volver = tk.Button(frame_crearPers, text="Volver al menú", font=FONT_BOTON_SALIR, width=18,
         bg=COLOR_BOTON_SALIR, fg="#fff", bd=0, relief="flat", cursor="hand2", command=mostrar_menu,
         activebackground="#FF6F6F", activeforeground="#fff")
@@ -263,7 +259,7 @@ def borrar_personaje_por_alter_ego(alter_ego, archivo="luchadores.txt"):
             partes = linea.strip().split(";")
             if len(partes) > 3 and partes[3].lower() == alter_ego.lower():
                 encontrado = True
-                continue  # No copiar esta línea (es la que se borra)
+                continue
             nuevas_lineas.append(linea)
     if not encontrado:
         messagebox.showerror("Error", f"No existe un personaje con el alter ego '{alter_ego}'")
@@ -275,12 +271,10 @@ def borrar_personaje_por_alter_ego(alter_ego, archivo="luchadores.txt"):
     return True
 
 def crear_formulario_borrar_personaje():
-    # Limpia el frame por si acaso
     for widget in frame_borrarPers.winfo_children():
         widget.destroy()
 
     tk.Label(frame_borrarPers, text="Borrar Personaje", font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO).place(relx=0.5, rely=0.18, anchor="center")
-
     tk.Label(frame_borrarPers, text="Nombre de alter ego a borrar:", font=FONT_LABEL, bg=COLOR_FONDO, fg=COLOR_TEXTO).place(relx=0.5, rely=0.34, anchor="center")
     entry_borrar = tk.Entry(frame_borrarPers, width=28, font=FONT_ENTRY, bg="#fff", fg="#333", bd=2, relief="groove")
     entry_borrar.place(relx=0.5, rely=0.39, anchor="center")
@@ -296,7 +290,6 @@ def crear_formulario_borrar_personaje():
     btn_borrar = tk.Button(frame_borrarPers, text="Borrar", width=15, command=borrar, bg=COLOR_BOTON, font=FONT_BOTON)
     btn_borrar.place(relx=0.5, rely=0.52, anchor="center")
 
-    # Botón Volver al menú
     btn_volver = tk.Button(frame_borrarPers, text="Volver al menú", font=FONT_BOTON_SALIR, width=18,
         bg=COLOR_BOTON_SALIR, fg="#fff", bd=0, relief="flat", cursor="hand2", command=mostrar_menu,
         activebackground="#FF6F6F", activeforeground="#fff")
@@ -304,12 +297,7 @@ def crear_formulario_borrar_personaje():
     btn_volver.bind("<Enter>", boton_salir_hover)
     btn_volver.bind("<Leave>", boton_salir_leave)
 
-
-#---------FUNCIONES AUXILIARES ÚTILES--------------#
-#E: Ninguna.
-#S: Lista de los nombres "alter ego" en el archivo luchadores,txt.
-#R: Ninguna.
-#Descripción: Obtener todos los "alter egos" de luchadores.txt.
+#---------FUNCIONES AUXILIARES--------------#
 def obtener_alter_egos():
     alter_egos = []
     with open("luchadores.txt", "r", encoding="utf-8") as luchadores:
@@ -318,10 +306,6 @@ def obtener_alter_egos():
             alter_egos.append(alter_ego)
     return alter_egos
 
-#E: Ninguna.
-#S: Lista de los nombres de los torneos en torneos_creados.txt.
-#R: Ninguna.
-#Descripción: Obtener todos los nombres de los torneos.
 def obtener_nombres_torneos():
     nombres_torneos = []
     with open("torneos_creados.txt", "r", encoding="utf-8") as torneos:
@@ -330,10 +314,6 @@ def obtener_nombres_torneos():
             nombres_torneos.append(nombre)
     return nombres_torneos
 
-#E: Ninguna.
-#S: Número de luchadores guardados.
-#R: Ninguno.
-#Descripción: Retorna un número que representa la cantidad de personajes guardados en el archivo luchadores.txt.
 def obtener_num_luchadores():
     num=0
     with open("luchadores.txt", "r", encoding="utf-8") as luchadores:
@@ -341,10 +321,6 @@ def obtener_num_luchadores():
             num=num+1
     return num
 
-#E: Una lista.
-#S: Valor booleano que indica si todos los elementos de una lista son diferentes.
-#R: Ninguno.
-#Descripción: Verificar que no existan elementos iguales en la lista.
 def todos_diferentes(lista):
     vistos = []
     for elem in lista:
@@ -353,20 +329,13 @@ def todos_diferentes(lista):
         vistos.append(elem)
     return True
 
-#E: Dos listas.
-#S: Valor booleano que indica si las dos listas no tienen ningún elemento en común.
-#R: Ninguno.
-#Descripción: Verificar que ambas listas sean diferentes entre sí.
 def listas_no_en_comun(lista1, lista2):
     for elem in lista1:
         if elem in lista2:
             return False
     return True
 
-
 # ----------- FORMULARIO CREAR TORNEO EN frame_crearTorneo ----------- #
-
-#-----Campos básicos------#
 tk.Label(frame_crearTorneo, text="Nombre:", font=FONT_LABEL, bg=COLOR_FONDO, fg=COLOR_TEXTO).place(relx=0.5, rely=0.2, anchor="center")
 entry_nombre = tk.Entry(frame_crearTorneo, width=30, font=FONT_ENTRY)
 entry_nombre.place(relx=0.5, rely=0.24, anchor="center")
@@ -382,9 +351,8 @@ opcion_cant_luchas.config(width=53)
 opcion_cant_luchas.place(relx=0.5, rely=0.54, anchor="center")
 
 def crear_torneo():
-    for entry in [entry_nombre,entry_lugar]: #Limpiar los entrys
+    for entry in [entry_nombre,entry_lugar]:
         entry.delete(0, "end")
-            
     tk.Label(frame_crearTorneo, text="Crear Torneo", font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO).place(relx=0.5, rely=0.1, anchor="center")
 
     btn_manual = tk.Button(frame_crearTorneo, text="Manual", width=20,
@@ -396,7 +364,6 @@ def crear_torneo():
     btn_programas = tk.Button(frame_crearTorneo, text="Programa VS Programa", width=20,
                               command=lambda: crear_luchas_torneo("programa",entry_nombre.get(),entry_lugar.get(),int(cant_luchas_var.get())),
                               bg=COLOR_BOTON, font=FONT_BOTON)
-
     y=0.65
     for boton in [btn_manual, btn_persona, btn_programas]:
         boton.place(relx=0.5, rely=y, anchor="center")
@@ -404,35 +371,29 @@ def crear_torneo():
 
 def crear_luchas_torneo(modo,nombre,lugar,cantidad):
     num = obtener_num_luchadores()
-    
     if not nombre or not lugar:
         messagebox.showwarning("Campos incompletos", "Debes completar todos los campos solicitados.")
-    elif num<cantidad*2:
+    elif num < cantidad*2:
         messagebox.showerror(f"Error: Solo hay {num} luchadores", f"No hay suficientes luchadores para {cantidad} luchas.")
     elif ";" in nombre or ";" in lugar:
-        messagebox.showerror("Error", "El nombre y el lugar no pueden contener punto y coma (;).") #Para que no haya un error al leer el archivo torneos_creados.txt.
+        messagebox.showerror("Error", "El nombre y el lugar no pueden contener punto y coma (;).")
     elif modo=="programa":
         luchas_programas(cantidad)
     else:
         ocultar_todos()
         frame_crearLuchasTorneo.place(relwidth=1, relheight=1)
-
-        for widget in frame_crearLuchasTorneo.winfo_children(): #Limpiar el frame
+        for widget in frame_crearLuchasTorneo.winfo_children():
             widget.destroy()
-
-        #Botón Atrás
         btn_atras = tk.Button(frame_crearLuchasTorneo, text="Atrás", font=FONT_BOTON_SALIR, width=18,
             bg=COLOR_BOTON_SALIR, fg="#fff", bd=0, relief="flat", cursor="hand2", command=mostrar_crearTorneo,
             activebackground="#FF6F6F", activeforeground="#fff")
         btn_atras.place(relx=0.02, rely=0.95, anchor="sw")
         btn_atras.bind("<Enter>", boton_salir_hover)
         btn_atras.bind("<Leave>", boton_salir_leave)
-        
         if modo=="manual":
             luchas_manual(cantidad)
         elif modo=="persona":
             luchas_persona_vs_programa(cantidad)
-        
 
 def luchas_manual(num):
     entradas_bando1=[]
@@ -440,76 +401,60 @@ def luchas_manual(num):
     alter_egos = obtener_alter_egos()
     subframe_luchas = tk.Frame(frame_crearLuchasTorneo, bg=COLOR_FONDO, width=400, height=300)
     subframe_luchas.place(relx=0.5, rely=0.5, anchor="center")
-    
     tk.Label(subframe_luchas, text="Bando 1", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).grid(row=0, column=0, padx=20, pady=10)
     tk.Label(subframe_luchas, text="Bando 2", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).grid(row=0, column=2, padx=20, pady=10)
-
     for i in range(num):
         var1 = tk.StringVar(value=alter_egos[0])
         opc1 = tk.OptionMenu(subframe_luchas, var1, *alter_egos)
         opc1.grid(row=i+1, column=0, padx=10, pady=5)
         opc1.config(width=53)
         entradas_bando1.append(var1)
-
-        vs=tk.Label(subframe_luchas, text="VS", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).grid(row=i+1, column=1, padx=5, pady=5)
-
+        tk.Label(subframe_luchas, text="VS", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).grid(row=i+1, column=1, padx=5, pady=5)
         var2 = tk.StringVar(value=alter_egos[1])
         opc2 = tk.OptionMenu(subframe_luchas, var2, *alter_egos)
         opc2.grid(row=i+1, column=2, padx=10, pady=5)
         opc2.config(width=53)
         entradas_bando2.append(var2)
-
     btn_guardar = tk.Button(frame_crearLuchasTorneo, text="Guardar", width=15,
                             command=lambda: guardar_torneo([var.get() for var in entradas_bando1],[var.get() for var in entradas_bando2]),
                             bg=COLOR_BOTON, font=FONT_BOTON)
     btn_guardar.place(relx=0.5, rely=0.8, anchor="center")
-
 
 def luchas_persona_vs_programa(num):
     persona_bando=[]
     alter_egos = obtener_alter_egos()
     subframe_luchas = tk.Frame(frame_crearLuchasTorneo, bg=COLOR_FONDO, width=400, height=400)
     subframe_luchas.place(relx=0.5, rely=0.5, anchor="center")
-    
     tk.Label(subframe_luchas, text="Bando 1", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).grid(row=0, column=0, padx=20, pady=10)
-
     for i in range(num):
         var1 = tk.StringVar(value=alter_egos[0])
         opc1 = tk.OptionMenu(subframe_luchas, var1, *alter_egos)
         opc1.grid(row=i+1, column=0, padx=10, pady=5)
         opc1.config(width=53)
         persona_bando.append(var1)
-
     btn_guardar = tk.Button(frame_crearLuchasTorneo, text="Guardar", width=15,
                             command=lambda: programa_bando([var.get() for var in persona_bando],[]),
                             bg=COLOR_BOTON, font=FONT_BOTON)
     btn_guardar.place(relx=0.5, rely=0.8, anchor="center")
 
-
 def programa_bando(luchadores_bando1,luchadores_bando2):
     alter_egos = obtener_alter_egos()
     num=len(luchadores_bando1)
-    
-    for luchador in alter_egos: #Para que el bando del programa no tenga ningún personaje del bando de la persona (para que no haya repetidos).
+    for luchador in alter_egos:
         if luchador not in luchadores_bando1:
             luchadores_bando2.append(luchador)
-            
     luchadores_bando2 = random.sample(luchadores_bando2, num)
     guardar_torneo(luchadores_bando1,luchadores_bando2)
-
 
 def luchas_programas(num):
     alter_egos = obtener_alter_egos()
     luchadores_bando1 = random.sample(alter_egos, num)
     disponibles = []
-        
-    for luchador in alter_egos: #Para que el bando 2 del programa no tenga ningún personaje del bando 1 (para que no haya repetidos).
+    for luchador in alter_egos:
         if luchador not in luchadores_bando1:
             disponibles.append(luchador)
-
     luchadores_bando2 = random.sample(disponibles, num)
     guardar_torneo(luchadores_bando1,luchadores_bando2)
-
 
 def guardar_torneo(luchadores_bando1,luchadores_bando2):
     if todos_diferentes(luchadores_bando1) and todos_diferentes(luchadores_bando2):
@@ -526,7 +471,6 @@ def guardar_torneo(luchadores_bando1,luchadores_bando2):
     else:
         messagebox.showerror("Error", "Todos los luchadores de un bando deben ser diferentes.")
 
-
 # ----------- FORMULARIO BORRAR TORNEO EN frame_borrarTorneo ----------- #
 entry_borrar = tk.Entry(frame_borrarTorneo, width=28, font=FONT_ENTRY, bg="#fff", fg="#333", bd=2, relief="groove")
 entry_borrar.place(relx=0.5, rely=0.39, anchor="center")
@@ -534,7 +478,7 @@ entry_borrar.place(relx=0.5, rely=0.39, anchor="center")
 def borrar_torneo():
     tk.Label(frame_borrarTorneo, text="Borrar Torneo", font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO).place(relx=0.5, rely=0.18, anchor="center")
     tk.Label(frame_borrarTorneo, text="Nombre del torneo a borrar:", font=FONT_LABEL, bg=COLOR_FONDO, fg=COLOR_TEXTO).place(relx=0.5, rely=0.34, anchor="center")
-    entry_borrar.delete(0, "end")  #Limpiar el entry
+    entry_borrar.delete(0, "end")
     btn_borrar = tk.Button(frame_borrarTorneo, text="Borrar", width=15, command=borrando_torneo, bg=COLOR_BOTON, font=FONT_BOTON)
     btn_borrar.place(relx=0.5, rely=0.5, anchor="center")
 
@@ -550,7 +494,7 @@ def borrando_torneo():
                 _nombre_ = linea.strip().split(";")[0]
                 if _nombre_.lower() == nombre.lower():
                     encontrado = True
-                    continue  #No copiar esta línea (es la que se borra)
+                    continue
                 nuevas_lineas.append(linea)
     if not encontrado:
         messagebox.showerror("Error", f"No existe un torneo con el nombre {nombre}.")
@@ -560,10 +504,11 @@ def borrando_torneo():
                 torneos.write(linea)
         messagebox.showinfo("Éxito", f"¡El torneo {nombre} ha sido borrado correctamente!")
 
-
 # ----------- FORMULARIO JUGAR TORNEO EN frame_jugar ----------- #
 def seleccionar_torneo():
-    tk.Label(frame_stats, text="Jugar Torneo", font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO).place(relx=0.5, rely=0.1, anchor="center")
+    for widget in frame_jugar.winfo_children():
+        widget.destroy()
+    tk.Label(frame_jugar, text="Jugar Torneo", font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO).place(relx=0.5, rely=0.1, anchor="center")
     nombres_torneos = obtener_nombres_torneos()
     tk.Label(frame_jugar, text="Seleccione un torneo para jugar", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).place(relx=0.5, rely=0.45, anchor="center")
     var = tk.StringVar(value=nombres_torneos[0])
@@ -576,17 +521,6 @@ def seleccionar_torneo():
                             bg=COLOR_BOTON, font=FONT_BOTON)
     btn_jugar.place(relx=0.5, rely=0.6, anchor="center")
 
-"""
-Clase: Torneo.
-Atributos:
-  Nombre del torneo
-  Fecha
-  Lugar del torneo
-  Número de luchas
-  Luchas: lista de objetos de tipo Lucha
-  Bando Ganador
-Métodos:
-"""
 class torneo:
     def __init__(self,nombre,fecha,lugar,num_luchas,lista_luchas):
         self.nombre=nombre
@@ -596,29 +530,16 @@ class torneo:
         self.luchas=lista_luchas
         self.bando_ganador=None
 
-"""
-Clase Lucha.
-Atributos:
-  Nombre del alter ego del primer luchador
-  Nombre del alter ego del segundo luchador
-  Clase Personaje del primer luchador
-  Clase Personaje del segundo luchador
-  Ganador del 1er round
-  Ganador del 2do round
-  Ganador del 3er round
-  Ganador de la lucha
-Métodos:
-"""
 class lucha:
-  def __init__(self,alter_ego1,alter_ego2,personaje1,personaje2):
-    self.alterego_luchador1=alter_ego1
-    self.alterego_luchador2=alter_ego2
-    self.luchador1=personaje1
-    self.luchador2=personaje2
-    self.ganador_round1=None
-    self.ganador_round2=None
-    self.ganador_round3=None
-    self.ganador_lucha=None
+    def __init__(self,alter_ego1,alter_ego2,personaje1,personaje2):
+        self.alterego_luchador1=alter_ego1
+        self.alterego_luchador2=alter_ego2
+        self.luchador1=personaje1
+        self.luchador2=personaje2
+        self.ganador_round1=None
+        self.ganador_round2=None
+        self.ganador_round3=None
+        self.ganador_lucha=None
 
 def iniciando_clases_juego(nombre_torneo):
     with open("torneos_creados.txt", "r", encoding="utf-8") as torneos:
@@ -630,7 +551,6 @@ def iniciando_clases_juego(nombre_torneo):
                 fecha = partes[1]
                 lugar = partes[2]
                 num_luchas = partes[3]
-                
                 lista_bando1 = eval(partes[4])
                 lista_bando2 = eval(partes[5])
                 lista_luchas = []
@@ -639,7 +559,6 @@ def iniciando_clases_juego(nombre_torneo):
                     p2 = crear_personaje(lista_bando2[i])
                     L = lucha(lista_bando1[i],lista_bando2[i],p1,p2)
                     lista_luchas.append(L)
-                    
                 torneo_actual = torneo(_nombre_,fecha,lugar,num_luchas,lista_luchas)
                 return juego(torneo_actual)
 
@@ -665,247 +584,252 @@ def crear_personaje(alter_ego):
                 regenera = int(partes[13])
                 return Personaje(tipo,sexo,nombre,alter_ego,speed,fuerza,intelig,defensa,magia,telepat,estrag,volar,elastic,regenera)
 
-# ----------- FORMULARIO JUGAR TORNEO EN frame_jugar02 ----------- #
+# ----------- FORMULARIO JUGAR TORNEO CON 3 ROUNDS POR PELEA EN frame_jugar02 ----------- #
 tk.Label(frame_jugar02, text="VS", font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO).place(relx=0.5, rely=0.5, anchor="center")
-subframe_jugar01 = tk.Frame(frame_jugar02, bg=COLOR_BOTON, width=500, height=400, highlightbackground=COLOR_BOTON_HOVER, highlightthickness=6)
+subframe_jugar01 = tk.Frame(
+    frame_jugar02, bg=COLOR_BOTON, width=500, height=400,
+    highlightbackground=COLOR_BOTON_HOVER, highlightthickness=6
+)
 subframe_jugar01.place(relx=0.2, rely=0.5, anchor="center")
-subframe_jugar02 = tk.Frame(frame_jugar02, bg=COLOR_BOTON, width=500, height=400, highlightbackground=COLOR_BOTON_HOVER, highlightthickness=6)
+subframe_jugar02 = tk.Frame(
+    frame_jugar02, bg=COLOR_BOTON, width=500, height=400,
+    highlightbackground=COLOR_BOTON_HOVER, highlightthickness=6
+)
 subframe_jugar02.place(relx=0.8, rely=0.5, anchor="center")
 tk.Label(frame_jugar02, text="Bando 1", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).place(relx=0.2, rely=0.15, anchor="center")
 tk.Label(frame_jugar02, text="Bando 2", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).place(relx=0.8, rely=0.15, anchor="center")
-    
+
 def juego(torneo):
     ocultar_todos()
     frame_jugar02.place(relwidth=1, relheight=1)
-    luchando(torneo,1,0,0,0)
+    luchando(torneo, 1, 0, 0, 0)
 
 def luchando(torneo, num, i, wins_bando1, wins_bando2):
     if i < len(torneo.luchas):
         lucha = torneo.luchas[i]
-
-        ROUND = tk.Label(frame_jugar02, text=f"Round {num}", font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO)
+        ROUND = tk.Label(frame_jugar02, text=f"Lucha {num}", font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO)
         ROUND.place(relx=0.5, rely=0.1, anchor="center")
-
         label_luchador1 = tk.Label(subframe_jugar01, text=lucha.alterego_luchador1, bg=COLOR_BOTON, fg="black", font=FONT_TITULO)
         label_luchador1.place(relx=0.5, rely=0.5, anchor="center")
-
         label_luchador2 = tk.Label(subframe_jugar02, text=lucha.alterego_luchador2, bg=COLOR_BOTON, fg="black", font=FONT_TITULO)
         label_luchador2.place(relx=0.5, rely=0.5, anchor="center")
 
-        def mostrar_resultado():
-            atributos_seleccionados = atributos_aleatorios()
-            atributos_luchador1 = []
-            atributos_luchador2 = []
-
-            for nombre in atributos_seleccionados:
-                num_poder_luchador1 = getattr(lucha.luchador1, nombre)
-                num_poder_luchador2 = getattr(lucha.luchador2, nombre)
-                atributos_luchador1.append([nombre, num_poder_luchador1])
-                atributos_luchador2.append([nombre, num_poder_luchador2])
-
-            wins_luchador1 = 0
-            wins_luchador2 = 0
-            for j in range(len(atributos_luchador1)):
-                if atributos_luchador1[j][1] > atributos_luchador2[j][1]:
-                    wins_luchador1 += 1
-                elif atributos_luchador2[j][1] > atributos_luchador1[j][1]:
-                    wins_luchador2 += 1
-
-            if wins_luchador1 > wins_luchador2:
-                mensaje = tk.Label(frame_jugar02, text="¡Ganador!", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL)
-                mensaje.place(relx=0.2, rely=0.85, anchor="center")
-                wins_bando1 = wins_bando1 + 1
-                escribir_resultado(lucha.alterego_luchador1,lucha.alterego_luchador2,num,lucha.alterego_luchador1,torneo.nombre)
-            elif wins_luchador2 > wins_luchador1:
-                mensaje = tk.Label(frame_jugar02, text="¡Ganador!", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL)
-                mensaje.place(relx=0.8, rely=0.85, anchor="center")
-                wins_bando2 = wins_bando2 + 1
-                escribir_resultado(lucha.alterego_luchador1,lucha.alterego_luchador2,num,lucha.alterego_luchador2,torneo.nombre)
-            elif wins_luchador1==wins_luchador2:
-                mensaje = tk.Label(frame_jugar02, text="Empate", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL)
-                mensaje.place(relx=0.5, rely=0.75, anchor="center")
-                escribir_resultado(lucha.alterego_luchador1,lucha.alterego_luchador2,num,"Ninguno.",torneo.nombre)
-
-            def limpiar_y_continuar():
-                ROUND.destroy()
-                label_luchador1.destroy()
-                label_luchador2.destroy()
-                mensaje.destroy()
-                luchando(torneo, num + 1, i + 1, wins_bando1, wins_bando2)
-
-            base.after(2000, limpiar_y_continuar)
-
-        # Esperar 500 ms antes de calcular y mostrar resultado, para que los nombres se vean.
-        base.after(500, mostrar_resultado)
-
+        def pelear_tres_rounds(round_actual, victorias1, victorias2):
+            if victorias1 < 2 and victorias2 < 2 and round_actual <= 3:
+                round_lbl = tk.Label(frame_jugar02, text=f"Round {round_actual}", font=FONT_LABEL, bg=COLOR_FONDO, fg=COLOR_ACENTO)
+                round_lbl.place(relx=0.5, rely=0.17, anchor="center")
+                def resolver_round():
+                    atributos_seleccionados = atributos_aleatorios()
+                    puntos1 = 0
+                    puntos2 = 0
+                    for nombre in atributos_seleccionados:
+                        num_poder_luchador1 = getattr(lucha.luchador1, nombre)
+                        num_poder_luchador2 = getattr(lucha.luchador2, nombre)
+                        if num_poder_luchador1 > num_poder_luchador2:
+                            puntos1 += 1
+                        elif num_poder_luchador2 > num_poder_luchador1:
+                            puntos2 += 1
+                    if puntos1 > puntos2:
+                        texto = f"Round {round_actual}: Gana {lucha.alterego_luchador1}"
+                        nuevo_victorias1 = victorias1 + 1
+                        nuevo_victorias2 = victorias2
+                    elif puntos2 > puntos1:
+                        texto = f"Round {round_actual}: Gana {lucha.alterego_luchador2}"
+                        nuevo_victorias1 = victorias1
+                        nuevo_victorias2 = victorias2 + 1
+                    else:
+                        texto = f"Round {round_actual}: Empate"
+                        nuevo_victorias1 = victorias1
+                        nuevo_victorias2 = victorias2
+                    mensaje_round = tk.Label(frame_jugar02, text=texto, bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL)
+                    mensaje_round.place(relx=0.5, rely=0.23+0.05*round_actual, anchor="center")
+                    def continuar():
+                        mensaje_round.destroy()
+                        round_lbl.destroy()
+                        pelear_tres_rounds(round_actual+1, nuevo_victorias1, nuevo_victorias2)
+                    base.after(1200, continuar)
+                base.after(300, resolver_round)
+            else:
+                if victorias1 > victorias2:
+                    mensaje = tk.Label(frame_jugar02, text="¡Ganador!", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL)
+                    mensaje.place(relx=0.2, rely=0.85, anchor="center")
+                    escribir_resultado(lucha.alterego_luchador1, lucha.alterego_luchador2, num, lucha.alterego_luchador1, torneo.nombre)
+                    nuevo_wins_bando1 = wins_bando1 + 1
+                    nuevo_wins_bando2 = wins_bando2
+                elif victorias2 > victorias1:
+                    mensaje = tk.Label(frame_jugar02, text="¡Ganador!", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL)
+                    mensaje.place(relx=0.8, rely=0.85, anchor="center")
+                    escribir_resultado(lucha.alterego_luchador1, lucha.alterego_luchador2, num, lucha.alterego_luchador2, torneo.nombre)
+                    nuevo_wins_bando1 = wins_bando1
+                    nuevo_wins_bando2 = wins_bando2 + 1
+                else:
+                    mensaje = tk.Label(frame_jugar02, text="Empate", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL)
+                    mensaje.place(relx=0.5, rely=0.75, anchor="center")
+                    escribir_resultado(lucha.alterego_luchador1, lucha.alterego_luchador2, num, "Ninguno.", torneo.nombre)
+                    nuevo_wins_bando1 = wins_bando1
+                    nuevo_wins_bando2 = wins_bando2
+                def limpiar_y_continuar():
+                    ROUND.destroy()
+                    label_luchador1.destroy()
+                    label_luchador2.destroy()
+                    mensaje.destroy()
+                    luchando(torneo, num + 1, i + 1, nuevo_wins_bando1, nuevo_wins_bando2)
+                base.after(1600, limpiar_y_continuar)
+        pelear_tres_rounds(1, 0, 0)
     else:
         for widget in frame_jugar02.winfo_children():
             widget.destroy()
+        if wins_bando1 > wins_bando2:
+            ganador = "Bando 1"
+            mensaje = f"¡GANADOR DEL TORNEO: BANDO 1!"
+        elif wins_bando2 > wins_bando1:
+            ganador = "Bando 2"
+            mensaje = f"¡GANADOR DEL TORNEO: BANDO 2!"
+        else:
+            ganador = "Empate"
+            mensaje = "¡TORNEO TERMINADO EN EMPATE!"
+        with open("torneos.txt", "a", encoding="utf-8") as resultados:
+            resultados.write(f"{torneo.nombre};{torneo.fecha};{torneo.lugar};{ganador}\n")
+        tk.Label(frame_jugar02, text=mensaje, font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO).place(relx=0.5, rely=0.4, anchor="center")
+        btn_volver = tk.Button(
+            frame_jugar02, text="Volver al menú", font=FONT_BOTON_SALIR, width=18,
+            bg=COLOR_BOTON_SALIR, fg="#fff", bd=0, relief="flat", cursor="hand2", command=mostrar_menu,
+            activebackground="#FF6F6F", activeforeground="#fff"
+        )
+        btn_volver.place(relx=0.5, rely=0.6, anchor="center")
+        btn_volver.bind("<Enter>", boton_salir_hover)
+        btn_volver.bind("<Leave>", boton_salir_leave)
 
-        if wins_bando1>wins_bando2:
-        elif wins_bando2>wins_bando1:
-        elif wins_bando1==wins_bando2:
-
-
-def escribir_resultado(alter_ego1,alter_ego2,num_round,ganador,torneo_nombre):
+def escribir_resultado(alter_ego1, alter_ego2, num_round, ganador, torneo_nombre):
     with open("luchas.txt", "a", encoding="utf-8") as archivo:
         archivo.write(f"{alter_ego1},{alter_ego2},{num_round},{ganador},{torneo_nombre}\n")
 
-
 def atributos_aleatorios():
-    atributos_disponibles = ['velocidad', 'fuerza', 'inteligencia', 'defensa_personal', 'magia',
-                             'telepatia', 'estratega', 'volar', 'elasticidad', 'regeneracion']
-
+    atributos_disponibles = [
+        'velocidad', 'fuerza', 'inteligencia', 'defensa_personal', 'magia',
+        'telepatia', 'estratega', 'volar', 'elasticidad', 'regeneracion'
+    ]
     seleccionados = random.sample(atributos_disponibles, 5)
     return seleccionados
 
-    
 # ----------- FORMULARIO ESTADÍSTICAS EN frame_stats ----------- #
-
 def stats():
-    tk.Label(frame_stats, text="Estadísticas", font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO).place(relx=0.5, rely=0.1, anchor="center")
-    subframe_stats = tk.Frame(frame_stats, bg=COLOR_FONDO, width=800, height=350, highlightbackground=COLOR_ACENTO, highlightthickness=8)
-    subframe_stats.place(relx=0.5, rely=0.5, anchor="center")
-    subframe_stats.grid_propagate(False)
-
-    labels_stats = ["Cantidad de torneos realizados:",
-                    "Cantidad de Villanos y Héroes creados:",
-                    "Héroe con más luchas ganadas:",
-                    "Héroe con más luchas perdidas:",
-                    "Villano con más luchas ganadas:",
-                    "Villano con más luchas perdidas:",
-                    "El Héroe con más números de torneos que aparece:",
-                    "El Villano con más números de torneos que aparece:"]
-    fila=0
-    for stat in labels_stats:
-        tk.Label(subframe_stats, text=stat, bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).grid(row=fila, column=0, padx=5, pady=5, sticky="w")
-        fila=fila+1
-
-    #1. Calcular la cantidad de torneos jugados (num_torneos_jugados):
-    num_torneos_jugados=0
-    with open("torneos.txt", "r", encoding="utf-8") as resultados:
-        for linea in resultados:
-            num_torneos_jugados = num_torneos_jugados + 1
-
-    #2. Calcular la cantidad de luchadores creados (num_luchadores):
-    num_luchadores = obtener_num_luchadores()
-
-#----------------------------------------EN DESARROLLO------------------------------
-    #Antes de continuar, primero obtener todos los luchadores ganadores y perdedores de luchas realizadas:
+    for widget in frame_stats.winfo_children():
+        widget.destroy()
+    tk.Label(frame_stats, text="Estadísticas", font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO).pack(pady=20)
+    subframe_stats = tk.Frame(frame_stats, bg=COLOR_FONDO)
+    subframe_stats.pack(pady=20)
+    num_torneos_jugados = sum(1 for _ in open("torneos.txt", encoding="utf-8"))
+    num_luchadores = sum(1 for _ in open("luchadores.txt", encoding="utf-8"))
+    num_heroes, num_villanos = 0, 0
+    with open("luchadores.txt", encoding="utf-8") as luchadores:
+        for linea in luchadores:
+            tipo = linea.strip().split(";")[0].lower()
+            if tipo == "héroe" or tipo == "heroe":
+                num_heroes += 1
+            elif tipo == "villano":
+                num_villanos += 1
+    def elemento_mas_repetido(lista):
+        if not lista:
+            return "-"
+        max_elem = lista[0]
+        max_count = 0
+        for elem in lista:
+            count = lista.count(elem)
+            if count > max_count:
+                max_count = count
+                max_elem = elem
+        return max_elem
+    def distinguir_luchadores(lista_luchadores, tipo):
+        tipo_deseado = []
+        with open("luchadores.txt", "r", encoding="utf-8") as luchadores:
+            lineas_txt = luchadores.readlines()
+            for luchador in lista_luchadores:
+                for linea in lineas_txt:
+                    partes = linea.strip().split(";")
+                    tipo_actual = partes[0]
+                    alter_ego = partes[3]
+                    if luchador == alter_ego and tipo == tipo_actual:
+                        tipo_deseado.append(luchador)
+                        break
+        return tipo_deseado
+    def obtener_ganadores_lucha():
+        lista = []
+        with open("luchas.txt", "r", encoding="utf-8") as luchas:
+            for linea in luchas:
+                partes = linea.strip().replace(",", ";").split(";")
+                if len(partes) >= 4:
+                    ganador = partes[3]
+                    lista.append(ganador)
+        return lista
+    def obtener_perdedores_lucha():
+        lista = []
+        with open("luchas.txt", "r", encoding="utf-8") as luchas:
+            for linea in luchas:
+                partes = linea.strip().replace(",", ";").split(";")
+                if len(partes) >= 4:
+                    luchador1 = partes[0]
+                    luchador2 = partes[1]
+                    ganador = partes[3]
+                    if luchador1 == ganador:
+                        lista.append(luchador2)
+                    elif luchador2 == ganador:
+                        lista.append(luchador1)
+        return lista
+    def mas_apariciones_en_torneos(tipo_buscado):
+        apariciones = {}
+        with open("torneos_creados.txt", "r", encoding="utf-8") as torneos:
+            for linea in torneos:
+                partes = linea.strip().split(";")
+                if len(partes) >= 6:
+                    bando1 = eval(partes[4])
+                    bando2 = eval(partes[5])
+                    for luchador in bando1 + bando2:
+                        with open("luchadores.txt", "r", encoding="utf-8") as luchadores:
+                            for lin in luchadores:
+                                p = lin.strip().split(";")
+                                if len(p) >= 4 and p[3] == luchador and p[0].lower() == tipo_buscado.lower():
+                                    apariciones[luchador] = apariciones.get(luchador, 0) + 1
+        if apariciones:
+            max_luchador = list(apariciones.keys())[0]
+            max_count = 0
+            for luch, count in apariciones.items():
+                if count > max_count:
+                    max_count = count
+                    max_luchador = luch
+            return max_luchador
+        else:
+            return "-"
     alter_egos_ganadores = obtener_ganadores_lucha()
     alter_egos_perdedores = obtener_perdedores_lucha()
-    print(alter_egos_ganadores)
-    print(alter_egos_perdedores)
-    print("")
-            
-    #3. (heroe_mas_ganador)
-    #Distinguir los héroes de los villanos:
-    heroes_ganadores = distinguir_luchadores(alter_egos_ganadores,"Héroe")
-    print(heroes_ganadores)
-    #Sacar el héroe con más victorias (el más repetido):
-    heroe_mas_ganador = elemento_mas_repetido(heroes_ganadores)
+    heroe_mas_ganador = elemento_mas_repetido(distinguir_luchadores(alter_egos_ganadores,"Héroe"))
+    heroe_mas_perdedor = elemento_mas_repetido(distinguir_luchadores(alter_egos_perdedores,"Héroe"))
+    villano_mas_ganador = elemento_mas_repetido(distinguir_luchadores(alter_egos_ganadores,"Villano"))
+    villano_mas_perdedor = elemento_mas_repetido(distinguir_luchadores(alter_egos_perdedores,"Villano"))
+    heroe_mas_aparece = mas_apariciones_en_torneos("Héroe")
+    villano_mas_aparece = mas_apariciones_en_torneos("Villano")
+    stats_data = [
+        ("Cantidad de torneos realizados:", str(num_torneos_jugados)),
+        ("Cantidad de Héroes creados:", str(num_heroes)),
+        ("Cantidad de Villanos creados:", str(num_villanos)),
+        ("Héroe con más luchas ganadas:", heroe_mas_ganador),
+        ("Héroe con más luchas perdidas:", heroe_mas_perdedor),
+        ("Villano con más luchas ganadas:", villano_mas_ganador),
+        ("Villano con más luchas perdidas:", villano_mas_perdedor),
+        ("Héroe que más aparece en torneos:", heroe_mas_aparece),
+        ("Villano que más aparece en torneos:", villano_mas_aparece)
+    ]
+    for i, (titulo, valor) in enumerate(stats_data):
+        tk.Label(subframe_stats, text=titulo, anchor="w", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL, width=42).grid(row=i, column=0, padx=6, pady=4, sticky="w")
+        tk.Label(subframe_stats, text=valor, anchor="w", bg=COLOR_FONDO, fg=COLOR_ACENTO if i in [3,5,7] else COLOR_TEXTO, font=FONT_LABEL, width=24).grid(row=i, column=1, padx=4, pady=4, sticky="w")
 
-    #4. (heroe_mas_perdedor)
-    #Distinguir los héroes de los villanos:
-    heroes_perdedores = distinguir_luchadores(alter_egos_perdedores,"Héroe")
-    print(heroes_perdedores)
-    #Sacar el héroe con más victorias (el más repetido):
-    heroe_mas_perdedor = elemento_mas_repetido(heroes_perdedores)
-    
-    #5. (villano_mas_ganador)
-    #Distinguir los villanos de los héroes:
-    villanos_ganadores = distinguir_luchadores(alter_egos_ganadores,"Villano")
-    print(villanos_ganadores)
-    #Sacar el villano con más victorias (el más repetido):
-    villano_mas_ganador = elemento_mas_repetido(villanos_ganadores)
+    btn_volver = tk.Button(frame_stats, text="Volver al menú", font=FONT_BOTON_SALIR, width=18,
+        bg=COLOR_BOTON_SALIR, fg="#fff", bd=0, relief="flat", cursor="hand2", command=mostrar_menu,
+        activebackground="#FF6F6F", activeforeground="#fff")
+    btn_volver.pack(side="bottom", pady=20)
+    btn_volver.bind("<Enter>", boton_salir_hover)
+    btn_volver.bind("<Leave>", boton_salir_leave)
 
-    #6. (villano_mas_perdedor)
-    #Distinguir los villanos de los héroes:
-    villanos_perdedores = distinguir_luchadores(alter_egos_perdedores,"Villano")
-    print(villanos_perdedores)
-    #Sacar el villano con más victorias (el más repetido):
-    villano_mas_perdedor = elemento_mas_repetido(villanos_perdedores)
-
-    
-
-    labels_resultados = [str(num_torneos_jugados), str(num_luchadores),
-                         heroe_mas_ganador, heroe_mas_perdedor,
-                         villano_mas_ganador, villano_mas_perdedor]
-    fila=0
-    for res in labels_resultados:
-        tk.Label(subframe_stats, text=res, bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).grid(row=fila, column=1, padx=5, pady=5)
-        fila=fila+1
-        
-#E: Una lista.
-#S: El elemento que más se repite en la lista.
-#R: Ninguno.
-#Descripción: Retorna el elemento que aparece más veces en la lista.
-def elemento_mas_repetido(lista):
-    max_repeticiones = 0
-    elemento_mas_comun = None
-
-    for i in range(len(lista)):
-        actual = lista[i]
-        repeticiones = 1  #Se cuenta el propio elemento
-
-        #Se recorre desde el siguiente elemento
-        for j in range(i + 1, len(lista)):
-            if lista[j] == actual:
-                repeticiones = repeticiones + 1
-
-        if repeticiones > max_repeticiones:
-            max_repeticiones = repeticiones
-            elemento_mas_comun = actual
-
-    return elemento_mas_comun
-
-#E: Una lista de luchadores y un string del tipo de luchador a buscar ("Héroe" o "Villano").
-#S: Nueva lista que contendrá solo el tipo de luchadores deseado.
-#R: Ninguno.
-#Descripción: Esta función se necesita en la estadísticas para hacer cálculos de solo héroes o de solo villanos.
-def distinguir_luchadores(lista_luchadores,tipo):
-    tipo_deseado = []
-    with open("luchadores.txt", "r", encoding="utf-8") as luchadores:
-        lineas_txt = luchadores.readlines()
-        for luchador in lista_luchadores:
-            for linea in lineas_txt:
-                partes = linea.strip().split(";")
-                tipo_actual = partes[0]
-                alter_ego = partes[3]
-                if luchador==alter_ego and tipo==tipo_actual:
-                    tipo_deseado.append(luchador)
-                    break
-    return tipo_deseado
-
-
-def obtener_ganadores_lucha():
-    with open("luchas.txt", "r", encoding="utf-8") as luchas:
-        lista = luchas.readlines()
-        alter_egos_ganadores = []
-        for linea in lista:
-            ganador = linea.strip().split(";")[3]
-            alter_egos_ganadores.append(ganador)
-    return alter_egos_ganadores
-
-def obtener_perdedores_lucha():
-    with open("luchas.txt", "r", encoding="utf-8") as luchas:
-        lista = luchas.readlines()
-        alter_egos_perdedores = []
-        for linea in lista:
-            partes = linea.strip().split(";")
-            luchador1 = partes[0]
-            luchador2 = partes[1]
-            ganador = partes[3]
-
-            if luchador1==ganador:
-                alter_egos_perdedores.append(luchador2)
-            elif luchador2==ganador:
-                alter_egos_perdedores.append(luchador1)
-    return alter_egos_perdedores
-
-#---------------------------------------------------------------------------
-
-        
 # ----------- MENÚ PRINCIPAL ----------- #
 titulo_menu = tk.Label(
     frame_menu,
@@ -940,7 +864,6 @@ btn_salir.place(relx=0.5, rely=0.83, anchor="center")
 btn_salir.bind("<Enter>", boton_salir_hover)
 btn_salir.bind("<Leave>", boton_salir_leave)
 
-# ----------- BOTONES DE VOLVER PARA OTROS FRAMES ----------- #
 for frame, funcion in [
     (frame_crearTorneo, mostrar_menu),
     (frame_borrarTorneo, mostrar_menu),
