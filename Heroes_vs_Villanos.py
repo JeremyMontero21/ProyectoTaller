@@ -25,7 +25,6 @@ ancho = base.winfo_screenwidth()
 base.geometry(f"{ancho}x710")
 base.config(bg=COLOR_FONDO)
 base.resizable(False, False)
-base.iconbitmap("iconoWalter.ico")
 
 # ----------- UTILIDADES VISUALES ----------- #
 def boton_hover(e):
@@ -506,20 +505,23 @@ def borrando_torneo():
 
 # ----------- FORMULARIO JUGAR TORNEO EN frame_jugar ----------- #
 def seleccionar_torneo():
-    for widget in frame_jugar.winfo_children():
-        widget.destroy()
-    tk.Label(frame_jugar, text="Jugar Torneo", font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO).place(relx=0.5, rely=0.1, anchor="center")
     nombres_torneos = obtener_nombres_torneos()
-    tk.Label(frame_jugar, text="Seleccione un torneo para jugar", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).place(relx=0.5, rely=0.45, anchor="center")
-    var = tk.StringVar(value=nombres_torneos[0])
-    opc = tk.OptionMenu(frame_jugar, var, *nombres_torneos)
-    opc.place(relx=0.5, rely=0.5, anchor="center")
-    opc.config(width=53)
+    if nombres_torneos == []:
+        messagebox.showerror("Error", "No hay ningún torneo creado para jugar.")
+    else:
+        for widget in frame_jugar.winfo_children():
+            widget.destroy()
+        tk.Label(frame_jugar, text="Jugar Torneo", font=FONT_TITULO, bg=COLOR_FONDO, fg=COLOR_ACENTO).place(relx=0.5, rely=0.1, anchor="center")
+        tk.Label(frame_jugar, text="Seleccione un torneo para jugar", bg=COLOR_FONDO, fg=COLOR_TEXTO, font=FONT_LABEL).place(relx=0.5, rely=0.45, anchor="center")
+        var = tk.StringVar(value=nombres_torneos[0])
+        opc = tk.OptionMenu(frame_jugar, var, *nombres_torneos)
+        opc.place(relx=0.5, rely=0.5, anchor="center")
+        opc.config(width=53)
 
-    btn_jugar = tk.Button(frame_jugar, text="Jugar", width=15,
-                            command=lambda: iniciando_clases_juego(var.get()),
-                            bg=COLOR_BOTON, font=FONT_BOTON)
-    btn_jugar.place(relx=0.5, rely=0.6, anchor="center")
+        btn_jugar = tk.Button(frame_jugar, text="Jugar", width=15,
+                                command=lambda: iniciando_clases_juego(var.get()),
+                                bg=COLOR_BOTON, font=FONT_BOTON)
+        btn_jugar.place(relx=0.5, rely=0.6, anchor="center")
 
 class torneo:
     def __init__(self,nombre,fecha,lugar,num_luchas,lista_luchas):
