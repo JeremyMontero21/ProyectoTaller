@@ -1,0 +1,24 @@
+Héroe;Hombre;Walter White;Heisenberg;5;10;45;5;0;0;30;0;0;5
+Héroe;Hombre;Mickey Mouse;Mickey Mouse;30;30;15;15;0;0;5;0;0;5
+Villano;Hombre;Deadpool;Deadpool;20;25;20;10;10;0;10;0;0;5
+Villano;Hombre;Steve;Steve;20;20;20;20;0;0;15;0;0;5
+Villano;Hombre;Jack Sparrow;Jack Sparrow;10;10;40;10;0;10;10;0;0;10
+Villano;Hombre;Darth Vader;Darth Vader;10;20;15;10;25;0;10;0;0;10
+Héroe;Hombre;Luke Skywalker;Luke Skywalker;10;15;15;10;30;10;0;0;5;5
+Villano;Hombre;Kratos;Kratos;15;40;5;10;0;0;5;0;15;10
+Villano;Hombre;Lionel Messi;Messi;30;30;10;10;0;0;10;0;5;5
+Villano;Hombre;Cristiano Ronaldo;Ronaldo;30;35;5;10;0;0;10;0;5;5
+Héroe;Hombre;Tony Stark;Ironman;10;10;40;10;15;0;10;0;0;5
+Héroe;Hombre;Bruce Wayne;Batman;10;10;40;15;0;0;20;0;0;5
+Héroe;Hombre;Clark Kent;Superman;20;20;10;10;10;0;10;10;5;5
+Villano;Hombre;Joker;El bromas;10;5;40;10;0;15;15;0;0;5
+Villano;Hombre;Peter Griffin;Peter Griffin;10;15;20;20;0;0;15;0;10;10
+Villano;Hombre;Homero Simpson;Homero Simpson;10;10;20;20;0;0;10;0;10;20
+Villano;Hombre;CJ;CJ;30;30;5;10;0;0;15;0;5;5
+Villano;No determinado;Hello Kitty;Hello Kitty;15;10;25;15;10;5;10;0;5;5
+Héroe;Hombre;Peter Parker;Spiderman;25;20;15;10;0;0;10;10;0;10
+Héroe;Hombre;Goku;Goku;10;25;10;10;25;0;10;0;5;5
+Héroe;Hombre;Vegeta;Vegeta;10;25;10;10;20;0;15;0;5;5
+Héroe;Hombre;Harry Potter;Harry Potter;10;10;25;10;25;5;10;0;0;5
+Héroe;Hombre;Bob Esponja;Bob Esponja;15;10;25;10;5;0;10;5;10;10
+Héroe;No determinado;Among Us;Impostor;20;15;15;20;5;0;10;5;10;0
